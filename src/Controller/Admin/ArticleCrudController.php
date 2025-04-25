@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class ArticleCrudController extends AbstractCrudController
 {
@@ -30,6 +31,14 @@ class ArticleCrudController extends AbstractCrudController
                 ->setBasePath('images/'),
             DateTimeField::new('createdAt')->hideOnForm(),
             DateTimeField::new('updatedAt')->hideOnForm(),
+            AssociationField::new('category', 'category')->setFormTypeOption('choice_label', 'name')
+                ->setLabel('Catégories')
+                ->formatValue(function ($value, $entity) {
+                    // Récupère les noms des catégories
+                    return implode(', ', $entity->getCategory()->map(function ($category) {
+                        return $category->getName();
+                    })->toArray());
+                }),
         ];
     }
 }

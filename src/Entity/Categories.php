@@ -42,6 +42,11 @@ class Categories
         $this->articless = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')); // date de creation de la categorie par defaut
     }
+    // ajout de cette fonction pour afficher le nom de la categorie dans le select de l'article 
+    public function __tostring(): string
+    {
+        return $this->name;
+    }
 
     //on va créer une fonction qui va permettre de mettre la date update par defaut
     #[ORM\PreUpdate]
