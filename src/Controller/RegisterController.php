@@ -22,6 +22,9 @@ final class RegisterController extends AbstractController
     //injection de userPasswordHasherInterface
 
     {
+        if ($this->getUser()) { //si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
+            return $this->redirectToRoute('app_home');
+        }
         $user = new Users; //on crée un nouvel utilisateur pour le formulaire
         $form = $this->createForm(RegisterType::class, $user); //btn droit et importer la classe RegisterType.php pour le formulaire d'inscription 
 

@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\CategoriesRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
+#[ORM\HasLifecycleCallbacks] // signifie que la méthode annotée sera appelée juste avant que l'entité soit mise à jour dans la base de données, c'est-à-dire juste avant l'exécution de la requête SQL de mise à jour.
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 class Categories
 {
@@ -23,7 +26,7 @@ class Categories
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Article>
@@ -31,9 +34,20 @@ class Categories
     #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'category')]
     private Collection $articless;
 
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->articless = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')); // date de creation de la categorie par defaut
+    }
+
+    //on va créer une fonction qui va permettre de mettre la date update par defaut
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue()
+    {
+        $this->updatedAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
     }
 
     public function getId(): ?int
@@ -65,12 +79,12 @@ class Categories
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -100,6 +114,18 @@ class Categories
         if ($this->articless->removeElement($articless)) {
             $articless->removeCategory($this);
         }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

@@ -17,7 +17,9 @@
          <header>
             <nav class="navbar navbar-expand-lg  bg-dark border-bottom border-bottom-dark" data-bs-theme="dark">
                 <div class="container-fluid d-flex justify-content-between">
-                    <a href="" class="navbar-brand w-50"><h1>Blog</h1></a>
+                    <a href="{{path("app_home")}}" class="navbar-brand w-50"></a>
+                    {# Quand je clique sur ce lien il m'affiche #}
+                    <h1>Blog</h1>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -34,21 +36,27 @@
    
                                 </ul>
                             </li>
-                            
-                          
-                                        <li><a href="" class="nav-link ps-2 text-white">Backoffice</a></li>                                  
+                                        {# <li><a href="" class="nav-link ps-2 text-white">Backoffice</a></li>                                   #}
 
                                     <li><a href="" class="nav-link ps-2 text-white">Backoffice</a></li>  
                            
+{# Quand on est connecté on y accède #}
 
-                                <li><a href="" class="nav-link ps-2 text-white">Compte</a></li>
+
+{# Débugger en twig #}
+                    {# {{dump(app.user)}} #}
+
+
+                    {% if app.user %}
+                                <li><a href="{{path("app_account")}}" class="nav-link ps-2 text-white">Compte</a></li>
                                 <li><a href="" class="nav-link ps-2 text-white">Mes articles</a></li>
-                                <li><a href="" class="nav-link ps-2 text-white">Déconnexion</a></li>
-                                
-                         
-                             
-                                <li><a href="" class="nav-link ps-2 text-white">Inscription</a></li>
-                                <li><a href="" class="nav-link ps-2 text-white">Connexion</a></li>    
+                                <li><a href="{{path("app_logout")}}" class="nav-link ps-2 text-white">Déconnexion</a></li>
+                    {% else %}
+                    {# si l'utilisateur n'est pas connecté #}
+                                <li><a href="{{path("app_register")}}" class="nav-link ps-2 text-white">Inscription</a></li>
+                                <li><a href="{{path("app_login")}}" class="nav-link ps-2 text-white">Connexion</a></li>   
+
+                    {% endif %} 
                         </ul>
                     </div>
                 </div>       

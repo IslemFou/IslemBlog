@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTimeImmutable;
+use App\Entity\Categories;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
@@ -26,20 +29,27 @@ class Article
     private ?string $image = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     /**
-     * @var Collection<int, categories>
+     * @var Collection<int, Categories>
      */
-    #[ORM\ManyToMany(targetEntity: categories::class, inversedBy: 'articless')]
+    #[ORM\ManyToMany(targetEntity: Categories::class, inversedBy: 'articless')]
     private Collection $category;
 
     public function __construct()
     {
         $this->category = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
+    }
+    //on va créer une fonction qui va permettre de mettre la date update par defaut
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue()
+    {
+        $this->updatedAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
     }
 
     public function getId(): ?int
@@ -83,24 +93,24 @@ class Article
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
@@ -108,14 +118,14 @@ class Article
     }
 
     /**
-     * @return Collection<int, categories>
+     * @return Collection<int, Categories>
      */
     public function getCategory(): Collection
     {
         return $this->category;
     }
 
-    public function addCategory(categories $category): static
+    public function addCategory(Categories $category): static
     {
         if (!$this->category->contains($category)) {
             $this->category->add($category);
