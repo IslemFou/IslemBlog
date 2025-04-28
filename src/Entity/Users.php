@@ -45,16 +45,25 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'User')]
-    private Collection $article;
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'user')]
+    private Collection $user;
 
     public function __construct()
     {
-        $this->article = new ArrayCollection();
+        $this->user = new ArrayCollection();
+    }
+
+    //on va créer une méthode pour convertir un objet en chaine de caractère
+    public function __toString(): string
+    {
+        return $this->email;
     }
 
 
-    public function getId(): ?int
+
+
+
+    public function getId(): ?int // ? ca peut etre null ou int
     {
         return $this->id;
     }
@@ -173,27 +182,27 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Article>
      */
-    public function getArticle(): Collection
+    public function getUser(): Collection
     {
-        return $this->article;
+        return $this->user;
     }
 
-    public function addArticle(Article $article): static
+    public function addUser(Article $user): static
     {
-        if (!$this->article->contains($article)) {
-            $this->article->add($article);
-            $article->setUser($this);
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeArticle(Article $article): static
+    public function removeUser(Article $user): static
     {
-        if ($this->article->removeElement($article)) {
+        if ($this->user->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($article->getUser() === $this) {
-                $article->setUser(null);
+            if ($user->getUser() === $this) {
+                $user->setUser(null);
             }
         }
 

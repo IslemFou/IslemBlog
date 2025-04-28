@@ -40,8 +40,11 @@ class Article
     #[ORM\ManyToMany(targetEntity: Categories::class, inversedBy: 'articless')]
     private Collection $category;
 
-    #[ORM\ManyToOne(inversedBy: 'article')]
-    private ?Users $User = null;
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Users $user = null;
+
+
 
     public function __construct()
     {
@@ -146,12 +149,12 @@ class Article
 
     public function getUser(): ?Users
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?Users $User): static
+    public function setUser(?Users $user): static
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }

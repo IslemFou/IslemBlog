@@ -2,10 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\ProfilRepository;
+use de;
+use App\Entity\Users;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProfilRepository;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ProfilRepository::class)]
 class Profil
 {
@@ -21,13 +25,25 @@ class Profil
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $dateBirth = null;
+    private ?DateTimeImmutable $dateBirth = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')); // date de creation de la categorie par defaut
+    }
+    // ajout de cette fonction pour afficher le nom de la categorie dans le select de l'article 
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue()
+    {
+        $this->updatedAt = new DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
+    }
+
 
     #[ORM\OneToOne(inversedBy: 'profill', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,24 +78,24 @@ class Profil
         return $this;
     }
 
-    public function getDateBirth(): ?\DateTimeImmutable
+    public function getDateBirth(): ?DateTimeImmutable
     {
         return $this->dateBirth;
     }
 
-    public function setDateBirth(?\DateTimeImmutable $dateBirth): static
+    public function setDateBirth(?DateTimeImmutable $dateBirth): static
     {
         $this->dateBirth = $dateBirth;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
